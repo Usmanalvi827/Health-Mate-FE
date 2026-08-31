@@ -1,0 +1,125 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+/*
+  HealthMate design tokens.
+  Keep names semantic (ink, paper, brand) instead of raw colors,
+  so components read as "brand" / "alert" rather than "teal-700".
+*/
+@theme {
+  --font-display: "Fraunces", serif;
+  --font-sans: "Inter", sans-serif;
+
+  --color-ink: #1c2420;
+  --color-ink-soft: #57635b;
+
+  --color-paper: #f6f6f2;
+  --color-surface: #ffffff;
+  --color-border: #e2e1d9;
+
+  --color-brand: #10504a;
+  --color-brand-dark: #0b3b36;
+  --color-brand-soft: #e6efec;
+
+  --color-accent: #b8863b;
+  --color-accent-soft: #f5ecd9;
+
+  --color-alert: #b0472f;
+  --color-alert-soft: #f6e7e1;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  /* faint grain so the "paper" background actually feels like paper,
+     instead of a flat screen color */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/></svg>");
+}
+
+/* Layered, warm-toned shadows instead of flat Tailwind defaults.
+   Used on cards throughout the landing page. */
+.shadow-card {
+  box-shadow:
+    0 1px 2px rgba(28, 36, 32, 0.04),
+    0 14px 30px -10px rgba(28, 36, 32, 0.12);
+}
+
+.shadow-card-hover {
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.shadow-card-hover:hover {
+  box-shadow:
+    0 2px 4px rgba(28, 36, 32, 0.06),
+    0 22px 40px -12px rgba(16, 80, 74, 0.18);
+  transform: translateY(-2px);
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+
+.pc-toast {
+  border-radius: 1rem;
+  padding: 12px 14px;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--color-ink);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow:
+    0 1px 2px rgba(28, 36, 32, 0.04),
+    0 14px 30px -10px rgba(28, 36, 32, 0.12);
+}
+
+.pc-toast--success { border-left: 3px solid var(--color-brand); }
+.pc-toast--warning { border-left: 3px solid var(--color-accent); }
+.pc-toast--error { border-left: 3px solid var(--color-alert); }
+
+.pc-toast--success .Toastify__toast-icon svg { color: var(--color-brand); }
+.pc-toast--warning .Toastify__toast-icon svg { color: var(--color-accent); }
+.pc-toast--error .Toastify__toast-icon svg { color: var(--color-alert); }
+
+.Toastify__progress-bar--success { background: var(--color-brand); }
+.Toastify__progress-bar--warning { background: var(--color-accent); }
+.Toastify__progress-bar--error { background: var(--color-alert); }
+
+.Toastify__close-button { color: var(--color-ink-soft); opacity: 0.6; }
+.Toastify__close-button:hover { opacity: 1; }
+
+@keyframes pc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pc-spinner {
+  animation: pc-spin 0.6s linear infinite;
+}
+
+@keyframes pc-bounce {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  40% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+
+.pc-dot {
+  animation: pc-bounce 1.2s infinite ease-in-out;
+}
