@@ -42,15 +42,18 @@ function Navbar() {
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
-          {/* TODO: point these at real /login and /register routes once auth pages exist */}
-          <Link to={"/login"}>   
-          <button className="text-sm font-medium text-ink-soft transition-colors hover:text-ink">
+          <Link
+            to="/login"
+            className="rounded-full px-4 py-2 text-sm font-medium text-ink-soft transition-colors hover:text-ink"
+          >
             Log In
-          </button>
           </Link>
-          <button className="rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-dark">
+          <Link
+            to="/register"
+            className="rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-dark"
+          >
             Get Started
-          </button>
+          </Link>
         </div>
 
         <button
@@ -77,12 +80,20 @@ function Navbar() {
               </a>
             ))}
             <hr className="border-border" />
-            <button className="text-left text-sm font-medium text-ink-soft">
+            <Link
+              to="/login"
+              onClick={() => setMenuOpen(false)}
+              className="text-left text-sm font-medium text-ink-soft"
+            >
               Log In
-            </button>
-            <button className="rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-white">
+            </Link>
+            <Link
+              to="/register"
+              onClick={() => setMenuOpen(false)}
+              className="rounded-full bg-brand px-5 py-2.5 text-center text-sm font-medium text-white"
+            >
               Get Started
-            </button>
+            </Link>
           </div>
         </div>
       )}

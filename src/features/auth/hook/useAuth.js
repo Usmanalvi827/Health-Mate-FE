@@ -1,5 +1,14 @@
-// handlers/auth.handler.js
+import { useContext } from "react";
+import { AuthContext } from "../context/authContext";
 import { loginAPI, registerAPI, logoutAPI } from "../api/auth.api";
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+}
 
 export async function handleRegister({
   firstName,

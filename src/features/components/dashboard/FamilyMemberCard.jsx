@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Droplet } from "lucide-react";
+import { ArrowRight, Droplet, Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 function getInitials(firstName = "", lastName = "") {
@@ -20,11 +20,11 @@ function getAge(dateOfBirth) {
   return age;
 }
 
-function SingleCard({ member }) {
+function SingleCard({ member, onEdit, onDelete }) {
   const fullName =
     `${member.firstName || ""} ${member.lastName || ""}`.trim() || "Unnamed";
   const age = getAge(member.dateOfBirth);
-  const memberId = member._id;
+  const memberId = member._id || member.id;
 
   return (
     /* Changed from motion.a to motion.div to prevent nested link issues */
@@ -33,9 +33,34 @@ function SingleCard({ member }) {
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -3 }}
       transition={{ duration: 0.3 }}
-      className="shadow-card shadow-card-hover group block rounded-2xl border border-border bg-surface p-5"
+      className="shadow-card shadow-card-hover group relative block rounded-2xl border border-border bg-surface p-5"
     >
-      <div className="flex items-center gap-3">
+      <div className="absolute right-4 top-4 flex items-center gap-1">
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit?.(member);
+          }}
+          aria-label={`Edit ${fullName}`}
+          className="rounded-full p-1.5 text-ink-soft transition-colors hover:bg-brand-soft hover:text-brand-dark"
+        >
+          <Pencil size={14} />
+        </button>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete?.(member);
+          }}
+          aria-label={`Delete ${fullName}`}
+          className="rounded-full p-1.5 text-ink-soft transition-colors hover:bg-alert-soft hover:text-alert"
+        >
+          <Trash2 size={14} />
+        </button>
+      </div>
+
+      <div className="flex items-center gap-3 pr-14">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-soft font-display text-base text-brand-dark">
           {getInitials(member.firstName, member.lastName)}
         </div>
@@ -65,7 +90,7 @@ function SingleCard({ member }) {
             ? new Date(member.dateOfBirth).toLocaleDateString()
             : "No DOB"}
         </span>
-        
+
         {/* The clean inner React Router Link handles navigation */}
         <Link to={`/family-member/${memberId}`}>
           <span className="flex items-center gap-1 text-sm font-medium text-brand">
@@ -81,11 +106,16 @@ function SingleCard({ member }) {
   );
 }
 
-function FamilyMemberCard({ members }) {
+function FamilyMemberCard({ members, onEdit, onDelete }) {
   return (
     <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {members.map((member) => (
-        <SingleCard key={member._id || member.id} member={member} />
+        <SingleCard
+          key={member._id || member.id}
+          member={member}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
       ))}
     </div>
   );

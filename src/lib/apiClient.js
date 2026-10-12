@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+
 export const api = axios.create({
-  baseURL: "http://localhost:5000/",
+  baseURL: BASE_URL,
   withCredentials: true,
   timeout: 10000,
 });
@@ -15,17 +17,14 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// If a token refresh is already in flight, every other failed request waits
-// on the same promise instead of firing its own refresh call. This matters
-// most on the Dashboard, which fires off the user's info and the user's
-// projects at almost the same time - without this, both would 401 and both
-// would try to refresh separately.
+// If a token refresh is already in flight, concurrent requests share the
+// same refresh promise instead of sending multiple refresh calls.
 let refreshPromise = null;
 
 function refreshAccessToken() {
   if (!refreshPromise) {
     refreshPromise = api
-      .post("api/auth/refresh-token")
+      .post("/api/auth/refresh-token")
       .then((res) => {
         const newAccessToken = res.data.accessToken;
         localStorage.setItem("accessToken", newAccessToken);
@@ -38,15 +37,18 @@ function refreshAccessToken() {
   return refreshPromise;
 }
 
-// authUser middleware always responds with 401 for a missing, expired, or
-// invalid access token - checking the status code alone is enough and is
-// far more reliable than matching on the exact error message text.
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    const isRefreshRequest = originalRequest?.url?.includes("refresh-token");
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest._retry &&
+      !isRefreshRequest
+    ) {
       originalRequest._retry = true;
 
       try {
@@ -54,8 +56,7 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
-        // refresh token is missing/expired/invalid - nothing left to do
-        // but send the user back to login, once
+        // Refresh token expired or invalid: clear session and redirect to login
         localStorage.removeItem("accessToken");
         window.location.href = "/login";
         return Promise.reject(refreshError);

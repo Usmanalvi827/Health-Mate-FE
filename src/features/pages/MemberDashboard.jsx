@@ -6,7 +6,7 @@ import MemberOverview from "../components/member/MemberOverview";
 import { getFamilyMember } from "../familymember/hook/useFamilyMember";
 
 function MemberDashboard() {
-  const { memberId } = useParams();
+  const { id: memberId } = useParams();
   const [member, setMember] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
@@ -18,8 +18,10 @@ function MemberDashboard() {
       // There's no single-member endpoint yet, so we fetch the same
       // family list the Dashboard uses and find this member in it.
       const res = await getFamilyMember();
-      const members = res.members || [];
-      const found = members.find((m) => (m._id || m.id) === memberId);
+      const members = res.members || res.data || [];
+      const found = members.find(
+        (m) => String(m._id || m.id) === String(memberId)
+      );
       setMember(found || null);
     } catch (error) {
       console.error("Fetch member failed:", error);

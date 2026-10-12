@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import RecordStack from "./RecordStack";
+import { Link } from "react-router-dom";
 import HeroVisual from "./HeroVisual";
 
 function Hero() {
@@ -24,10 +24,13 @@ function Hero() {
             it all.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <button className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 font-medium text-white transition-colors hover:bg-brand-dark">
+            <Link
+              to="/register"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 font-medium text-white transition-colors hover:bg-brand-dark"
+            >
               Get Started
               <ArrowRight size={18} />
-            </button>
+            </Link>
             <a
               href="#how-it-works"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3 font-medium text-ink transition-colors hover:border-ink-soft"
@@ -38,14 +41,6 @@ function Hero() {
         </motion.div>
 
         <div className="relative">
-          <div
-            className="absolute inset-0 -z-10 rounded-full opacity-60 blur-3xl"
-            style={{
-              background:
-                "radial-gradient(circle, var(--color-brand-soft) 0%, transparent 70%)",
-            }}
-          />
-
           <HeroVisual />
         </div>
       </div>

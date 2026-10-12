@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Bell, Menu, X, LogOut } from "lucide-react";
 import { AuthContext } from "../../auth/context/authContext";
 import { handleLogout } from "../../auth/hook/useAuth";
@@ -6,7 +7,8 @@ import { toast } from "react-toastify";
 
 function DashboardHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, setUser ,loggingOut, setLoggingOut } = useContext(AuthContext);
+  const { user, setUser, loggingOut, setLoggingOut } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const firstname = user?.firstname || user?.firstName || "";
   const lastname = user?.lastname || user?.lastName || "";
@@ -15,13 +17,13 @@ function DashboardHeader() {
   const displayName = firstname || "Loading...";
   const initials = firstname ? firstname.slice(0, 2).toUpperCase() : "HM";
 
-    async function logoutClickHandler() {
+  async function logoutClickHandler() {
     if (loggingOut) return;
     setLoggingOut(true);
 
     try {
       await handleLogout();
-    } catch (error) {
+    } catch {
       // even if the backend call fails, we still clear the user locally
       // so they can't stay stuck on the dashboard with a dead session
     } finally {
@@ -39,13 +41,13 @@ function DashboardHeader() {
     <header className="sticky top-0 z-50 border-b border-border bg-paper/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <div className="flex items-center gap-10">
-          <a href="/dashboard" className="font-display text-xl text-ink">
+          <Link to="/dashboard" className="font-display text-xl text-ink">
             HealthMate
-          </a>
+          </Link>
           <nav className="hidden items-center gap-6 md:flex">
-            <a href="/dashboard" className="text-sm font-medium text-ink">
+            <Link to="/dashboard" className="text-sm font-medium text-ink">
               Dashboard
-            </a>
+            </Link>
           </nav>
         </div>
 
@@ -80,20 +82,39 @@ function DashboardHeader() {
       {menuOpen && (
         <div className="border-t border-border bg-paper px-6 py-4 md:hidden">
           <div className="flex flex-col gap-4">
-            <a href="/dashboard" className="text-sm font-medium text-ink">Dashboard</a>
-            <a href="/dashboard" className="text-sm text-ink-soft">My Family</a>
+            <Link
+              to="/dashboard"
+              onClick={() => setMenuOpen(false)}
+              className="text-sm font-medium text-ink"
+            >
+              Dashboard
+            </Link>
+            <Link
+              to="/dashboard"
+              onClick={() => setMenuOpen(false)}
+              className="text-sm text-ink-soft"
+            >
+              My Family
+            </Link>
             <hr className="border-border" />
             <div className="flex items-center gap-2">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-soft font-display text-sm text-brand-dark">
                 {initials}
               </div>
-              <span className="text-sm font-medium text-ink">{displayName} {lastname}</span>
+              <span className="text-sm font-medium text-ink">
+                {displayName} {lastname}
+              </span>
             </div>
             <button
-              className="inline-flex items-center gap-1.5 text-left text-sm font-medium text-ink-soft"
+              onClick={() => {
+                setMenuOpen(false);
+                logoutClickHandler();
+              }}
+              disabled={loggingOut}
+              className="inline-flex items-center gap-1.5 text-left text-sm font-medium text-ink-soft transition-colors hover:text-alert disabled:opacity-50"
             >
               <LogOut size={16} />
-              Logout
+              {loggingOut ? "Logging out..." : "Logout"}
             </button>
           </div>
         </div>

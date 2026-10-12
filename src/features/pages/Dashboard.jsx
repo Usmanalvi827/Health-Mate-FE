@@ -6,10 +6,14 @@ import FamilyMemberCard from "../components/dashboard/FamilyMemberCard";
 import FamilyMemberCardSkeleton from "../components/dashboard/FamilyMemberCardSkeleton";
 import EmptyFamilyState from "../components/dashboard/EmptyFamilyState";
 import AddFamilyMemberModal from "../components/dashboard/AddFamilyMemberModal";
+import EditFamilyMemberModal from "../components/dashboard/EditFamilyMemberModal";
+import DeleteFamilyMemberModal from "../components/dashboard/DeleteFamilyMemberModal";
 import { getFamilyMember } from "../familymember/hook/useFamilyMember";
 
 function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingMember, setEditingMember] = useState(null);
+  const [deletingMember, setDeletingMember] = useState(null);
   const [familyMembers, setFamilyMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
@@ -19,7 +23,6 @@ function Dashboard() {
       setLoading(true);
       setLoadError(false);
       const res = await getFamilyMember();
-      // console.log(res)
       setFamilyMembers(res.members || res.data || []);
     } catch (error) {
       console.error("Fetch members failed:", error);
@@ -29,18 +32,16 @@ function Dashboard() {
     }
   };
 
-useEffect(() => {
-  if (familyMembers.length === 0) {
+  useEffect(() => {
     fetchMembers();
-  }
-}, []);
+  }, []);
 
   return (
     <div className="min-h-screen bg-paper">
       <DashboardHeader />
       <main className="mx-auto max-w-6xl px-6 py-10">
         <Greeting onAddMember={() => setIsModalOpen(true)} />
-        
+
         <div className="mt-8">
           <FamilyOverview totalMembers={familyMembers.length} loading={loading} />
         </div>
@@ -66,7 +67,11 @@ useEffect(() => {
             ) : familyMembers.length === 0 ? (
               <EmptyFamilyState onAddMember={() => setIsModalOpen(true)} />
             ) : (
-              <FamilyMemberCard members={familyMembers} />
+              <FamilyMemberCard
+                members={familyMembers}
+                onEdit={(member) => setEditingMember(member)}
+                onDelete={(member) => setDeletingMember(member)}
+              />
             )}
           </div>
         </section>
@@ -75,6 +80,20 @@ useEffect(() => {
       <AddFamilyMemberModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        onSuccess={fetchMembers}
+      />
+
+      <EditFamilyMemberModal
+        isOpen={!!editingMember}
+        member={editingMember}
+        onClose={() => setEditingMember(null)}
+        onSuccess={fetchMembers}
+      />
+
+      <DeleteFamilyMemberModal
+        isOpen={!!deletingMember}
+        member={deletingMember}
+        onClose={() => setDeletingMember(null)}
         onSuccess={fetchMembers}
       />
     </div>

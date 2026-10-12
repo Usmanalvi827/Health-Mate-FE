@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function CTASection() {
   return (
     <section className="mx-auto max-w-6xl px-6 py-20">
@@ -17,9 +19,12 @@ function CTASection() {
         <p className="mx-auto mt-3 max-w-md text-brand-soft">
           Create an account and add your first family member in minutes.
         </p>
-        <button className="mt-8 rounded-full bg-white px-7 py-3 font-medium text-brand-dark transition-transform hover:scale-[1.03]">
+        <Link
+          to="/register"
+          className="mt-8 inline-block rounded-full bg-white px-7 py-3 font-medium text-brand-dark transition-transform hover:scale-[1.03]"
+        >
           Get Started
-        </button>
+        </Link>
       </div>
     </section>
   );

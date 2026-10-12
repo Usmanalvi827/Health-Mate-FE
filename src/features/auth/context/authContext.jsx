@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { getMeAPI } from "../api/auth.api";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [loadingBtn, setLoadingBtn] = useState(false);
@@ -9,10 +9,8 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loggingOut, setLoggingOut] = useState(false);
 
-
   useEffect(() => {
     const rehydrateUser = async () => {
-      // console.log("Workingggg");
       const token = localStorage.getItem("accessToken");
       if (!token) {
         setUser(null);
@@ -21,8 +19,8 @@ export function AuthProvider({ children }) {
       }
       try {
         const data = await getMeAPI();
-        setUser(data.data);
-      } catch (error) {
+        setUser(data.data || data.user || data);
+      } catch {
         localStorage.removeItem("accessToken");
         setUser(null);
       } finally {
@@ -42,9 +40,10 @@ export function AuthProvider({ children }) {
         setLoadingBtn,
         user,
         setUser,
+        isAuthenticated,
         loadingPage,
         loggingOut,
-setLoggingOut
+        setLoggingOut,
       }}
     >
       {children}
