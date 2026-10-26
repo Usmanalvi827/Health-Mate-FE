@@ -6,6 +6,7 @@ import LoginPage from "./features/pages/LoginPage";
 import ProtectedRoute from "./routes/ProtectedRoutes";
 import Dashboard from "./features/pages/Dashboard";
 import MemberDashboard from "./features/pages/MemberDashboard";
+import ReportDetailsPage from "./features/pages/ReportDetailsPage";
 
 export const router = createBrowserRouter([
   {
@@ -21,10 +22,10 @@ export const router = createBrowserRouter([
   },
   {
     element: <ProtectedRoute />,
-    /* Both routes are now properly grouped inside ONE children array */
     children: [
       { path: "/dashboard", element: <Dashboard /> },
-      { path: "/family-member/:id", element: <MemberDashboard /> }
+      { path: "/family-member/:id", element: <MemberDashboard /> },
+      { path: "/family-member/:id/report/:reportId", element: <ReportDetailsPage /> },
     ],
   },
 ]);

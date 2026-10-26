@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
 import MemberHeader from "../components/member/MemberHeader";
 import MemberOverview from "../components/member/MemberOverview";
+import MemberReportsSection from "../components/reports/MemberReportsSection";
 import { getFamilyMember } from "../familymember/hook/useFamilyMember";
 
 function MemberDashboard() {
@@ -75,7 +76,8 @@ function MemberDashboard() {
             <MemberHeader member={member} />
             <MemberOverview member={member} />
 
-            {/* Vitals, Medical Records, and Health Timeline sections go here next */}
+            {/* Medical Reports & AI Analysis Section */}
+            <MemberReportsSection member={member} />
           </div>
         )}
       </main>
